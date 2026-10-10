@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>網頁創意設計講義 — 龍蝦俠新媒體藝術家網站製作</title>
+<style>
+/* ── 講義樣式 ──────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg:      #0e0e0e;
+  --bg2:     #161616;
+  --bg3:     #1e1e1e;
+  --accent:  #ff4500;
+  --accent2: #ff8c00;
+  --text:    #e8e8e8;
+  --muted:   #888;
+  --border:  rgba(255,255,255,0.08);
+  --green:   #2ecc71;
+  --blue:    #3498db;
+  --purple:  #9b59b6;
+  --yellow:  #f1c40f;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 62.5%; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.8;
+  padding-bottom: 8rem;
+}
+
+/* 頂部標題 */
+.doc-header {
+  background: linear-gradient(135deg, #0e0e0e 0%, #1a0a00 50%, #0e0e0e 100%);
+  border-bottom: 2px solid var(--accent);
+  padding: 5rem 4rem 4rem;
+  text-align: center;
+}
+.doc-header .course-tag {
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+}
+.doc-header h1 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 1.2rem;
+}
+.doc-header .subtitle {
+  color: var(--muted);
+  font-size: 1.4rem;
+}
+.doc-header .meta {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  font-size: 1.2rem;
+  color: var(--muted);
+}
+.doc-header .meta span { display: flex; align-items: center; gap: 0.6rem; }
+
+/* 目錄 */
+.toc {
+  max-width: 860px;
+  margin: 4rem auto;
+  padding: 0 2rem;
+}
+.toc-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 2.4rem 3rem;
+}
+.toc-box h2 {
+  font-size: 1.3rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.6rem;
+}
+.toc-list { list-style: none; }
+.toc-list > li { margin-bottom: 0.8rem; }
+.toc-list > li > a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.4rem;
+  transition: color 0.2s;
+}
+.toc-list > li > a:hover { color: var(--accent); }
+.toc-list .toc-num {
+  display: inline-block;
+  width: 2.4rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* 版面容器 */
+.content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* 章節 */
+.chapter {
+  margin-top: 6rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.chapter-num {
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+}
+.chapter h2 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 1.6rem;
+  color: var(--text);
+}
+.chapter p { color: #ccc; line-height: 1.9; margin-bottom: 1.4rem; }
+.chapter p strong { color: var(--text); font-weight: 600; }
+
+/* 小節 */
+.section {
+  margin-top: 3.6rem;
+}
+.section h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  padding-left: 1.2rem;
+  border-left: 3px solid var(--accent);
+  color: var(--text);
+}
+.section p { color: #ccc; line-height: 1.9; margin-bottom: 1.2rem; }
+
+/* 步驟卡片 */
+.step {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2rem 2.4rem;
+  margin: 1.6rem 0;
+  position: relative;
+}
+.step-num {
+  position: absolute;
+  top: -1.2rem;
+  left: 2rem;
+  background: var(--accent);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.2rem 1rem;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+.step h4 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: var(--text);
+}
+.step p { color: #bbb; font-size: 1.4rem; line-height: 1.8; margin-bottom: 0.8rem; }
+
+/* 程式碼區塊 */
+pre {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2rem;
+  overflow-x: auto;
+  margin: 1.6rem 0;
+  position: relative;
+}
+.code-label {
+  position: absolute;
+  top: 0.8rem;
+  right: 1.2rem;
+  font-size: 1.1rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+pre code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.3rem;
+  line-height: 1.8;
+  color: #e6edf3;
+  display: block;
+}
+
+/* 語法高亮（手動 span）*/
+.c-tag   { color: #7ee787; }  /* HTML 標籤 */
+.c-attr  { color: #79c0ff; }  /* 屬性 */
+.c-val   { color: #a5d6ff; }  /* 屬性值 */
+.c-sel   { color: #ff7b72; }  /* CSS 選擇器 */
+.c-prop  { color: #79c0ff; }  /* CSS 屬性 */
+.c-var   { color: #ffa657; }  /* CSS 變數 / JS 變數 */
+.c-fn    { color: #d2a8ff; }  /* 函式 */
+.c-str   { color: #a5d6ff; }  /* 字串 */
+.c-num   { color: #79c0ff; }  /* 數字 */
+.c-cmt   { color: #8b949e; font-style: italic; }  /* 注解 */
+.c-kw    { color: #ff7b72; }  /* 關鍵字 */
+
+/* 提示盒 */
+.tip, .warning, .concept {
+  border-radius: 8px;
+  padding: 1.6rem 2rem;
+  margin: 1.6rem 0;
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+.tip {
+  background: rgba(46,204,113,0.08);
+  border-left: 4px solid var(--green);
+  color: #aef;
+}
+.tip::before { content: '💡 提示：'; font-weight: 700; color: var(--green); display: block; margin-bottom: 0.4rem; }
+.warning {
+  background: rgba(255,69,0,0.08);
+  border-left: 4px solid var(--accent);
+  color: #fcc;
+}
+.warning::before { content: '⚠️ 注意：'; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.4rem; }
+.concept {
+  background: rgba(52,152,219,0.08);
+  border-left: 4px solid var(--blue);
+  color: #bdf;
+}
+.concept::before { content: '📖 概念：'; font-weight: 700; color: var(--blue); display: block; margin-bottom: 0.4rem; }
+
+/* 表格 */
+table { width: 100%; border-collapse: collapse; margin: 1.6rem 0; font-size: 1.3rem; }
+th { background: var(--bg3); color: var(--accent); font-weight: 700; padding: 1rem 1.4rem; text-align: left; border-bottom: 1px solid var(--border); }
+td { padding: 1rem 1.4rem; border-bottom: 1px solid var(--border); color: #ccc; }
+tr:hover td { background: var(--bg2); }
+
+/* 圖示標記 */
+.file-tree {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.6rem 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.3rem;
+  line-height: 2;
+  color: #ccc;
+  margin: 1.6rem 0;
+  white-space: pre;       /* ← 保留換行，確保每個檔案各自成行 */
+  overflow-x: auto;       /* ← 超寬時橫向捲動，不破版 */
+}
+.file-tree .dir  { color: var(--blue); }
+.file-tree .file { color: #e6edf3; }
+.file-tree .note { color: var(--muted); font-size: 1.1rem; }
+
+/* 鍵盤按鍵 */
+kbd {
+  background: var(--bg3);
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 0.1rem 0.6rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.2rem;
+  color: var(--text);
+}
+
+/* 分頁標籤（Mac/Windows）*/
+.tabs { display: flex; gap: 0.4rem; margin-bottom: -1px; }
+.tab-btn {
+  padding: 0.6rem 1.6rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: var(--bg3);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn.active { background: var(--bg2); color: var(--accent); border-color: var(--accent); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══════ 頂部標題 ══════ -->
+<div class="doc-header">
+  <p class="course-tag">網頁創意設計 · 新媒體藝術學系</p>
+  <h1>龍蝦俠新媒體藝術家<br>個人網站製作講義</h1>
+  <p class="subtitle">從 HTML5 盒子到 p5.js 生成藝術，一步步建構屬於你的藝術家網站</p>
+  <div class="meta">
+    <span>📄 HTML5 + CSS3 + JavaScript + p5.js</span>
+    <span>🎨 新媒體藝術學系</span>
+    <span>🦞 示範藝術家：龍蝦俠</span>
+  </div>
+</div>
+
+<!-- ══════ 目錄 ══════ -->
+<div class="toc">
+  <div class="toc-box">
+    <h2>目錄</h2>
+    <ul class="toc-list">
+      <li><a href="#ch1"><span class="toc-num">01</span>認識 HTML5：網頁的骨架</a></li>
+      <li><a href="#ch2"><span class="toc-num">02</span>CSS3 基礎：視覺設計系統</a></li>
+      <li><a href="#ch3"><span class="toc-num">03</span>CSS3 進階：Flexbox 與 Grid 排版</a></li>
+      <li><a href="#ch4"><span class="toc-num">04</span>JavaScript：讓頁面活起來</a></li>
+      <li><a href="#ch5"><span class="toc-num">05</span>p5.js：生成藝術整合</a></li>
+      <li><a href="#ch6"><span class="toc-num">06</span>逐步建站：龍蝦俠網站完整流程</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════ 第一章 ══════ -->
+<div class="chapter" id="ch1">
+  <p class="chapter-num">Chapter 01</p>
+  <h2>認識 HTML5：網頁的骨架</h2>
+  <p>HTML（HyperText Markup Language）是網頁的骨架。就像蓋房子先搭鋼骨，HTML 定義了網頁有哪些「盒子」，這些盒子叫什麼、放什麼內容。CSS 再負責讓盒子好看，JavaScript 讓它會動。</p>
+
+  <div class="section">
+    <h3>1-1 每個 HTML 頁面的必要結構</h3>
+    <p>每一個 HTML 檔案都必須從以下骨架開始：</p>
+    <pre><code><span class="c-cmt">&lt;!-- 告訴瀏覽器這是 HTML5 --&gt;</span>
+<span class="c-tag">&lt;!DOCTYPE html&gt;</span>
+
+<span class="c-cmt">&lt;!-- lang：告訴搜尋引擎和螢幕閱讀器這是繁體中文 --&gt;</span>
+<span class="c-tag">&lt;html</span> <span class="c-attr">lang</span>=<span class="c-str">"zh-Hant-TW"</span><span class="c-tag">&gt;</span>
+<span class="c-tag">&lt;head&gt;</span>
+  <span class="c-cmt">&lt;!-- 設定文字編碼（支援中文必須有）--&gt;</span>
+  <span class="c-tag">&lt;meta</span> <span class="c-attr">charset</span>=<span class="c-str">"UTF-8"</span><span class="c-tag">&gt;</span>
+  <span class="c-cmt">&lt;!-- 讓網頁在手機上也能正常縮放（RWD 必須有）--&gt;</span>
+  <span class="c-tag">&lt;meta</span> <span class="c-attr">name</span>=<span class="c-str">"viewport"</span> <span class="c-attr">content</span>=<span class="c-str">"width=device-width, initial-scale=1.0"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;title&gt;</span>頁面標題（出現在瀏覽器分頁）<span class="c-tag">&lt;/title&gt;</span>
+  <span class="c-tag">&lt;link</span> <span class="c-attr">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-attr">href</span>=<span class="c-str">"css/style.css"</span><span class="c-tag">&gt;</span>
+<span class="c-tag">&lt;/head&gt;</span>
+<span class="c-tag">&lt;body&gt;</span>
+  <span class="c-cmt">&lt;!-- 所有看得見的內容都放在 body 裡 --&gt;</span>
+<span class="c-tag">&lt;/body&gt;</span>
+<span class="c-tag">&lt;/html&gt;</span></code></pre>
+
+    <div class="concept">HTML 的 <strong>&lt;head&gt;</strong> 是「給瀏覽器看的」（設定、CSS引用、meta 資訊）。<strong>&lt;body&gt;</strong> 是「給使用者看的」（所有出現在頁面上的內容）。</div>
+  </div>
+
+  <div class="section">
+    <h3>1-2 HTML5 語意化標籤</h3>
+    <p>HTML5 引入了<strong>語意化標籤</strong>，讓每個區塊的「意義」更清楚。龍蝦俠網站的每個頁面都使用這個結構：</p>
+
+    <table>
+      <tr><th>標籤</th><th>語意</th><th>龍蝦俠網站用途</th></tr>
+      <tr><td><code>&lt;header&gt;</code></td><td>頁首</td><td>固定導覽列（含 Logo + 選單）</td></tr>
+      <tr><td><code>&lt;nav&gt;</code></td><td>導覽</td><td>頁面連結列表</td></tr>
+      <tr><td><code>&lt;main&gt;</code></td><td>主要內容</td><td>每頁的核心區塊</td></tr>
+      <tr><td><code>&lt;section&gt;</code></td><td>章節區塊</td><td>Hero / 作品集 / 關於…等各區</td></tr>
+      <tr><td><code>&lt;article&gt;</code></td><td>獨立文章</td><td>每一件作品卡片</td></tr>
+      <tr><td><code>&lt;aside&gt;</code></td><td>側邊補充</td><td>聯絡頁的資訊欄</td></tr>
+      <tr><td><code>&lt;footer&gt;</code></td><td>頁尾</td><td>版權 + 社群連結</td></tr>
+    </table>
+
+    <pre><code><span class="c-tag">&lt;body&gt;</span>
+  <span class="c-tag">&lt;header</span> <span class="c-attr">class</span>=<span class="c-str">"site-header"</span><span class="c-tag">&gt;</span>
+    <span class="c-tag">&lt;nav&gt;</span>...<span class="c-tag">&lt;/nav&gt;</span>
+  <span class="c-tag">&lt;/header&gt;</span>
+
+  <span class="c-tag">&lt;main&gt;</span>
+    <span class="c-tag">&lt;section</span> <span class="c-attr">class</span>=<span class="c-str">"hero"</span><span class="c-tag">&gt;</span>...<span class="c-tag">&lt;/section&gt;</span>
+    <span class="c-tag">&lt;section</span> <span class="c-attr">class</span>=<span class="c-str">"about-preview"</span><span class="c-tag">&gt;</span>...<span class="c-tag">&lt;/section&gt;</span>
+  <span class="c-tag">&lt;/main&gt;</span>
+
+  <span class="c-tag">&lt;footer</span> <span class="c-attr">class</span>=<span class="c-str">"site-footer"</span><span class="c-tag">&gt;</span>...<span class="c-tag">&lt;/footer&gt;</span>
+<span class="c-tag">&lt;/body&gt;</span></code></pre>
+  </div>
+</div>
+
+<!-- ══════ 第二章 ══════ -->
+<div class="chapter" id="ch2">
+  <p class="chapter-num">Chapter 02</p>
+  <h2>CSS3 基礎：視覺設計系統</h2>
+  <p>CSS（Cascading Style Sheets）負責控制 HTML 盒子的外觀：顏色、尺寸、位置、動畫。龍蝦俠網站把所有設計決策集中在 <code>variables.css</code> 裡，透過 CSS Custom Properties（變數）統一管理。</p>
+
+  <div class="section">
+    <h3>2-1 CSS 引用順序（非常重要！）</h3>
+    <div class="warning">CSS 引用順序決定了「後面的樣式會覆蓋前面的」。龍蝦俠網站規定的引用順序絕不能改變。</div>
+    <pre><code><span class="c-cmt">&lt;!-- 1. 先引入歸零：消除所有瀏覽器預設樣式 --&gt;</span>
+<span class="c-tag">&lt;link</span> <span class="c-attr">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-attr">href</span>=<span class="c-str">"css/reset.css"</span><span class="c-tag">&gt;</span>
+
+<span class="c-cmt">&lt;!-- 2. 再引入設計變數：定義色彩、字體、間距 --&gt;</span>
+<span class="c-tag">&lt;link</span> <span class="c-attr">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-attr">href</span>=<span class="c-str">"css/variables.css"</span><span class="c-tag">&gt;</span>
+
+<span class="c-cmt">&lt;!-- 3. 再引入共用樣式：導覽列、頁尾、按鈕等 --&gt;</span>
+<span class="c-tag">&lt;link</span> <span class="c-attr">rel</span>=<span class="c-str">"stylesheet"</span> <span class="c-attr">href</span>=<span class="c-str">"css/style.css"</span><span class="c-tag">&gt;</span></code></pre>
+  </div>
+
+  <div class="section">
+    <h3>2-2 CSS 變數系統（variables.css）</h3>
+    <p>CSS Custom Properties（俗稱 CSS 變數）讓我們把「設計決策」統一放在 <code>:root</code> 裡。改一個地方，整個網站同步更新。</p>
+    <pre><code><span class="c-cmt">/* 在 :root 裡定義變數，整個頁面都能用 */</span>
+<span class="c-sel">:root</span> {
+  <span class="c-cmt">/* 語法：--變數名稱: 值; */</span>
+  <span class="c-var">--color-bg</span>:     <span class="c-num">#0a0a0a</span>;   <span class="c-cmt">/* 主背景色 */</span>
+  <span class="c-var">--color-accent</span>: <span class="c-num">#ff4500</span>;   <span class="c-cmt">/* 強調色（龍蝦橘紅）*/</span>
+  <span class="c-var">--color-text</span>:   <span class="c-num">#f0f0f0</span>;   <span class="c-cmt">/* 主文字色 */</span>
+  <span class="c-var">--font-heading</span>: <span class="c-str">'Playfair Display'</span>, serif;
+  <span class="c-var">--space-4</span>:      <span class="c-num">3.2rem</span>;     <span class="c-cmt">/* 32px 間距 */</span>
+}
+
+<span class="c-cmt">/* 使用變數：用 var() 函式 */</span>
+<span class="c-sel">.hero-title</span> {
+  <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-var">--color-accent</span>);
+  <span class="c-prop">font-family</span>: <span class="c-fn">var</span>(<span class="c-var">--font-heading</span>);
+  <span class="c-prop">margin-bottom</span>: <span class="c-fn">var</span>(<span class="c-var">--space-4</span>);
+}</code></pre>
+    <div class="tip">想要換整個網站的主色調？只要修改 <code>variables.css</code> 裡的 <code>--color-accent</code> 一個地方就好！</div>
+  </div>
+
+  <div class="section">
+    <h3>2-3 CSS Transitions 過渡動畫</h3>
+    <p>讓 hover 效果不是瞬間跳變，而是平滑過渡：</p>
+    <pre><code><span class="c-sel">.btn</span> {
+  <span class="c-prop">background-color</span>: <span class="c-fn">var</span>(<span class="c-var">--color-accent</span>);
+  <span class="c-cmt">/* transition：屬性 時間 緩動函式 */</span>
+  <span class="c-prop">transition</span>: background-color <span class="c-num">0.3s</span> ease,
+              transform <span class="c-num">0.3s</span> ease;
+}
+
+<span class="c-sel">.btn:hover</span> {
+  <span class="c-prop">background-color</span>: <span class="c-num">#cc3600</span>;
+  <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">-2px</span>); <span class="c-cmt">/* 上浮 2px */</span>
+}</code></pre>
+
+    <h3 style="margin-top:3rem">2-4 CSS @keyframes 關鍵幀動畫</h3>
+    <p>比 transition 更強大，可以定義動畫的任意中間狀態：</p>
+    <pre><code><span class="c-cmt">/* 定義動畫：from（開始）→ to（結束）*/</span>
+<span class="c-kw">@keyframes</span> fadeInUp {
+  <span class="c-kw">from</span> { <span class="c-prop">opacity</span>: <span class="c-num">0</span>; <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">30px</span>); }
+  <span class="c-kw">to</span>   { <span class="c-prop">opacity</span>: <span class="c-num">1</span>; <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">0</span>); }
+}
+
+<span class="c-cmt">/* 套用動畫：animation: 名稱 時間 緩動 延遲 次數 */</span>
+<span class="c-sel">.hero-name</span> {
+  <span class="c-prop">animation</span>: fadeInUp <span class="c-num">0.8s</span> ease <span class="c-num">0.5s</span> both;
+  <span class="c-cmt">/* both：動畫前保持 from 狀態，結束後保持 to 狀態 */</span>
+}</code></pre>
+  </div>
+</div>
+
+<!-- ══════ 第三章 ══════ -->
+<div class="chapter" id="ch3">
+  <p class="chapter-num">Chapter 03</p>
+  <h2>CSS3 進階：Flexbox 與 Grid 排版</h2>
+  <p>現代 CSS 排版有兩個強大工具：<strong>Flexbox</strong>（一維排列）和 <strong>CSS Grid</strong>（二維格狀）。龍蝦俠網站大量使用這兩種技術。</p>
+
+  <div class="section">
+    <h3>3-1 Flexbox 一維排列</h3>
+    <p>Flexbox 適合用於「一排」的元素排列，例如導覽列、按鈕群組、卡片行。</p>
+    <pre><code><span class="c-cmt">/* 父元素：設為 flex 容器 */</span>
+<span class="c-sel">.nav-container</span> {
+  <span class="c-prop">display</span>: flex;
+  <span class="c-prop">align-items</span>: center;      <span class="c-cmt">/* 垂直置中 */</span>
+  <span class="c-prop">justify-content</span>: space-between; <span class="c-cmt">/* 兩端對齊 */</span>
+  <span class="c-prop">gap</span>: <span class="c-num">2.4rem</span>;              <span class="c-cmt">/* 子元素間距 */</span>
+}
+
+<span class="c-cmt">/* flex: 1 讓元素佔滿剩餘空間 */</span>
+<span class="c-sel">.nav-links</span> { <span class="c-prop">flex</span>: <span class="c-num">1</span>; }
+
+<span class="c-cmt">/* flex-shrink: 0 讓元素不縮小 */</span>
+<span class="c-sel">.nav-logo</span> { <span class="c-prop">flex-shrink</span>: <span class="c-num">0</span>; }</code></pre>
+
+    <table>
+      <tr><th>屬性</th><th>常用值</th><th>效果</th></tr>
+      <tr><td>justify-content</td><td>flex-start / center / flex-end / space-between</td><td>主軸對齊（水平）</td></tr>
+      <tr><td>align-items</td><td>flex-start / center / flex-end / stretch</td><td>交叉軸對齊（垂直）</td></tr>
+      <tr><td>flex-direction</td><td>row / column</td><td>排列方向（橫/直）</td></tr>
+      <tr><td>flex-wrap</td><td>nowrap / wrap</td><td>是否允許換行</td></tr>
+      <tr><td>gap</td><td>任意長度</td><td>子元素間距</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>3-2 CSS Grid 二維格狀</h3>
+    <p>Grid 適合製作複雜的二維版面，例如作品牆、雜誌版面。</p>
+    <pre><code><span class="c-cmt">/* 作品牆：自動計算欄數 */</span>
+<span class="c-sel">.works-grid</span> {
+  <span class="c-prop">display</span>: grid;
+
+  <span class="c-cmt">/* 魔法語法：auto-fill + minmax
+     auto-fill：自動算能排幾欄
+     minmax(300px, 1fr)：每欄最小300px，最大均分 */</span>
+  <span class="c-prop">grid-template-columns</span>: <span class="c-fn">repeat</span>(auto-fill, <span class="c-fn">minmax</span>(<span class="c-num">300px</span>, <span class="c-num">1fr</span>));
+  <span class="c-prop">gap</span>: <span class="c-num">2.4rem</span>;
+}
+
+<span class="c-cmt">/* 某張卡片跨 2 欄 */</span>
+<span class="c-sel">.featured-card:first-child</span> {
+  <span class="c-prop">grid-column</span>: <span class="c-num">1</span> / <span class="c-num">3</span>; <span class="c-cmt">/* 從第1欄線到第3欄線 */</span>
+}</code></pre>
+
+    <div class="tip">auto-fill + minmax 是響應式設計的神器。不需要寫任何 media query，版面會自動根據螢幕寬度決定幾欄！</div>
+  </div>
+
+  <div class="section">
+    <h3>3-3 響應式設計（RWD）Media Query</h3>
+    <pre><code><span class="c-cmt">/* 預設：桌機版（大螢幕先寫）*/</span>
+<span class="c-sel">.contact-grid</span> {
+  <span class="c-prop">display</span>: grid;
+  <span class="c-prop">grid-template-columns</span>: <span class="c-num">1fr</span> <span class="c-num">2fr</span>; <span class="c-cmt">/* 左1:右2 */</span>
+}
+
+<span class="c-cmt">/* 768px 以下（手機）：改成單欄 */</span>
+<span class="c-kw">@media</span> (max-width: <span class="c-num">768px</span>) {
+  <span class="c-sel">.contact-grid</span> {
+    <span class="c-prop">grid-template-columns</span>: <span class="c-num">1fr</span>; <span class="c-cmt">/* 單欄 */</span>
+  }
+}</code></pre>
+  </div>
+</div>
+
+<!-- ══════ 第四章 ══════ -->
+<div class="chapter" id="ch4">
+  <p class="chapter-num">Chapter 04</p>
+  <h2>JavaScript：讓頁面活起來</h2>
+  <p>JavaScript 讓 HTML+CSS 的靜態網頁變得有互動性。龍蝦俠網站的 <code>js/main.js</code> 裡集中了六個功能模組。</p>
+
+  <div class="section">
+    <h3>4-1 DOM 操作基礎</h3>
+    <p>DOM（Document Object Model）是瀏覽器把 HTML 轉換成的樹狀結構，JavaScript 可以透過它選取和修改元素。</p>
+    <pre><code><span class="c-cmt">/* 選取元素 */</span>
+<span class="c-kw">const</span> <span class="c-var">btn</span>  = document.<span class="c-fn">querySelector</span>(<span class="c-str">'.btn'</span>);       <span class="c-cmt">// 選第一個</span>
+<span class="c-kw">const</span> <span class="c-var">btns</span> = document.<span class="c-fn">querySelectorAll</span>(<span class="c-str">'.btn'</span>);    <span class="c-cmt">// 選全部</span>
+
+<span class="c-cmt">/* 修改 class */</span>
+<span class="c-var">btn</span>.classList.<span class="c-fn">add</span>(<span class="c-str">'active'</span>);      <span class="c-cmt">// 加 class</span>
+<span class="c-var">btn</span>.classList.<span class="c-fn">remove</span>(<span class="c-str">'active'</span>);   <span class="c-cmt">// 移除 class</span>
+<span class="c-var">btn</span>.classList.<span class="c-fn">toggle</span>(<span class="c-str">'open'</span>);    <span class="c-cmt">// 有就移除，沒有就加</span>
+
+<span class="c-cmt">/* 監聽事件 */</span>
+<span class="c-var">btn</span>.<span class="c-fn">addEventListener</span>(<span class="c-str">'click'</span>, <span class="c-kw">function</span>() {
+  console.<span class="c-fn">log</span>(<span class="c-str">'按鈕被按了！'</span>);
+});
+
+<span class="c-cmt">/* 讀取自訂 data-* 屬性 */</span>
+<span class="c-cmt">// &lt;button data-filter="generative"&gt;</span>
+<span class="c-kw">const</span> <span class="c-var">filter</span> = <span class="c-var">btn</span>.<span class="c-fn">getAttribute</span>(<span class="c-str">'data-filter'</span>); <span class="c-cmt">// 'generative'</span></code></pre>
+  </div>
+
+  <div class="section">
+    <h3>4-2 IntersectionObserver 滾動進場動畫</h3>
+    <p>這是 <code>main.js</code> 最重要的功能之一。當元素進入視窗時自動觸發動畫：</p>
+
+    <div class="step">
+      <div class="step-num">Step 1</div>
+      <h4>在 HTML 元素加上 class="reveal"</h4>
+      <pre><code><span class="c-tag">&lt;h2</span> <span class="c-attr">class</span>=<span class="c-str">"reveal"</span><span class="c-tag">&gt;</span>進入視窗才顯現的標題<span class="c-tag">&lt;/h2&gt;</span>
+<span class="c-tag">&lt;p</span> <span class="c-attr">class</span>=<span class="c-str">"reveal reveal-delay-2"</span><span class="c-tag">&gt;</span>延遲 200ms 出現<span class="c-tag">&lt;/p&gt;</span></code></pre>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 2</div>
+      <h4>CSS 定義初始（隱藏）和可見狀態</h4>
+      <pre><code><span class="c-cmt">/* 初始狀態：隱藏 + 往下偏移 30px */</span>
+<span class="c-sel">.reveal</span> {
+  <span class="c-prop">opacity</span>: <span class="c-num">0</span>;
+  <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">30px</span>);
+  <span class="c-prop">transition</span>: opacity <span class="c-num">0.6s</span> ease, transform <span class="c-num">0.6s</span> ease;
+}
+
+<span class="c-cmt">/* 可見狀態：JS 加上 .visible class 後觸發 */</span>
+<span class="c-sel">.reveal.visible</span> {
+  <span class="c-prop">opacity</span>: <span class="c-num">1</span>;
+  <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">0</span>);
+}</code></pre>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3</div>
+      <h4>JS 用 IntersectionObserver 監看元素，進入視窗就加 .visible</h4>
+      <pre><code><span class="c-kw">const</span> <span class="c-var">observer</span> = <span class="c-kw">new</span> <span class="c-fn">IntersectionObserver</span>(
+  <span class="c-kw">function</span>(<span class="c-var">entries</span>) {
+    <span class="c-var">entries</span>.<span class="c-fn">forEach</span>(<span class="c-kw">function</span>(<span class="c-var">entry</span>) {
+      <span class="c-kw">if</span> (<span class="c-var">entry</span>.isIntersecting) {
+        <span class="c-var">entry</span>.target.classList.<span class="c-fn">add</span>(<span class="c-str">'visible'</span>);
+      }
+    });
+  },
+  { threshold: <span class="c-num">0.15</span> } <span class="c-cmt">// 出現 15% 時觸發</span>
+);
+
+document.<span class="c-fn">querySelectorAll</span>(<span class="c-str">'.reveal'</span>).<span class="c-fn">forEach</span>(<span class="c-var">el</span> =&gt;
+  <span class="c-var">observer</span>.<span class="c-fn">observe</span>(<span class="c-var">el</span>)
+);</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>4-3 Nav 雙模式：scroll 偵測 + hero-mode（index.html 首頁）</h3>
+    <p>首頁的 Hero section 是全螢幕影片背景（暗色調），nav 預設的淡色背景+深色文字會讓人看不清楚。<br>
+    解法：偵測使用者是否還在 Hero 範圍內，動態切換兩套 nav 樣式。</p>
+
+    <div class="step">
+      <div class="step-num">原理</div>
+      <h4>用 scrollY 判斷是否在 Hero 範圍，JS 切換 CSS class</h4>
+      <pre><code><span class="c-kw">const</span> <span class="c-var">header</span>      = document.<span class="c-fn">querySelector</span>(<span class="c-str">'.site-header'</span>);
+<span class="c-kw">const</span> <span class="c-var">heroSection</span> = document.<span class="c-fn">getElementById</span>(<span class="c-str">'hero'</span>);  <span class="c-cmt">// 只在首頁存在</span>
+
+<span class="c-cmt">// 首頁初始：直接設定 hero-mode</span>
+<span class="c-kw">if</span> (heroSection) header.classList.<span class="c-fn">add</span>(<span class="c-str">'hero-mode'</span>);
+
+window.<span class="c-fn">addEventListener</span>(<span class="c-str">'scroll'</span>, <span class="c-kw">function</span>() {
+
+  <span class="c-cmt">// 通用：捲超過 50px → 加深背景</span>
+  <span class="c-kw">if</span> (window.scrollY &gt; <span class="c-num">50</span>) {
+    header.classList.<span class="c-fn">add</span>(<span class="c-str">'scrolled'</span>);
+  } <span class="c-kw">else</span> {
+    header.classList.<span class="c-fn">remove</span>(<span class="c-str">'scrolled'</span>);
+  }
+
+  <span class="c-cmt">// 首頁專用：在 Hero 範圍內 → hero-mode（白字透明底）</span>
+  <span class="c-kw">if</span> (heroSection) {
+    <span class="c-kw">if</span> (window.scrollY &lt; heroSection.offsetHeight - <span class="c-num">80</span>) {
+      header.classList.<span class="c-fn">add</span>(<span class="c-str">'hero-mode'</span>);
+    } <span class="c-kw">else</span> {
+      header.classList.<span class="c-fn">remove</span>(<span class="c-str">'hero-mode'</span>); <span class="c-cmt">// 恢復淡色主題</span>
+    }
+  }
+
+}, { passive: <span class="c-kw">true</span> });</code></pre>
+    </div>
+
+    <div class="step">
+      <div class="step-num">CSS</div>
+      <h4>style.css：.hero-mode 的兩 class 選擇器優先級 > .scrolled</h4>
+      <pre><code><span class="c-cmt">/* .hero-mode + .scrolled 雙 class → 優先級高於單一 .scrolled */</span>
+<span class="c-sel">.site-header.hero-mode</span>,
+<span class="c-sel">.site-header.hero-mode.scrolled</span> {
+  <span class="c-prop">background-color</span>: <span class="c-fn">rgba</span>(<span class="c-num">0</span>, <span class="c-num">0</span>, <span class="c-num">0</span>, <span class="c-num">0.22</span>); <span class="c-cmt">/* 透明深色底 */</span>
+  <span class="c-prop">backdrop-filter</span>: <span class="c-fn">blur</span>(<span class="c-num">8px</span>);
+}
+
+<span class="c-sel">.site-header.hero-mode .nav-logo</span>,
+<span class="c-sel">.site-header.hero-mode .nav-links a</span> {
+  <span class="c-prop">color</span>: <span class="c-fn">rgba</span>(<span class="c-num">255</span>, <span class="c-num">255</span>, <span class="c-num">255</span>, <span class="c-num">0.9</span>);  <span class="c-cmt">/* 白色文字 */</span>
+}</code></pre>
+    </div>
+
+    <div class="tip">三種狀態一目了然：<br>
+    ① 首頁 Hero 頂端：<code>.hero-mode</code> → 透明底 + 白字<br>
+    ② 首頁往下捲（還在 Hero 範圍）：<code>.hero-mode.scrolled</code> → 仍白字（hero-mode 優先）<br>
+    ③ 捲出 Hero 後所有頁面：<code>.scrolled</code>（或無 class）→ 淡色底 + 深色字</div>
+  </div>
+
+  <div class="section">
+    <h3>4-5 表單驗證（contact.html）</h3>
+    <pre><code><span class="c-kw">const</span> <span class="c-var">form</span> = document.<span class="c-fn">getElementById</span>(<span class="c-str">'contactForm'</span>);
+
+<span class="c-cmt">/* 攔截送出事件 */</span>
+<span class="c-var">form</span>.<span class="c-fn">addEventListener</span>(<span class="c-str">'submit'</span>, <span class="c-kw">function</span>(<span class="c-var">e</span>) {
+  <span class="c-var">e</span>.<span class="c-fn">preventDefault</span>(); <span class="c-cmt">// 阻止預設的頁面跳轉</span>
+
+  <span class="c-cmt">/* Email 正規表達式驗證 */</span>
+  <span class="c-kw">const</span> <span class="c-var">emailRegex</span> = <span class="c-str">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+  <span class="c-kw">if</span> (!<span class="c-var">emailRegex</span>.<span class="c-fn">test</span>(<span class="c-var">email</span>.value)) {
+    <span class="c-cmt">// 顯示錯誤：給 .form-group 加上 .error class</span>
+    document.<span class="c-fn">getElementById</span>(<span class="c-str">'group-email'</span>).classList.<span class="c-fn">add</span>(<span class="c-str">'error'</span>);
+  }
+});</code></pre>
+  </div>
+</div>
+
+<!-- ══════ 第五章 ══════ -->
+<div class="chapter" id="ch5">
+  <p class="chapter-num">Chapter 05</p>
+  <h2>p5.js：生成藝術整合</h2>
+  <p>p5.js 是一個讓藝術家也能輕鬆使用的 JavaScript 繪圖庫。龍蝦俠網站使用四種整合模式，從課堂練習的 <code>p5.js_with_html</code> 資料夾出發，逐步擴展。</p>
+
+  <div class="section">
+    <h3>5-1 p5.js Instance Mode（網頁整合的正確方式）</h3>
+    <div class="concept">課堂練習用的 Global Mode（直接寫 <code>function setup()</code>）方便學習，但在有其他 JavaScript 的網頁中容易衝突。<strong>Instance Mode</strong> 把所有 p5 功能封裝在一個函式裡，是網頁整合的標準做法。</div>
+
+    <pre><code><span class="c-cmt">&lt;!-- 1. 引入 p5.js CDN（放在 &lt;/body&gt; 前）--&gt;</span>
+<span class="c-tag">&lt;script</span> <span class="c-attr">src</span>=<span class="c-str">"https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"</span><span class="c-tag">&gt;&lt;/script&gt;</span>
+
+<span class="c-cmt">&lt;!-- 2. 指定 canvas 要放進的 div 容器 --&gt;</span>
+<span class="c-tag">&lt;div</span> <span class="c-attr">id</span>=<span class="c-str">"my-canvas"</span><span class="c-tag">&gt;&lt;/div&gt;</span></code></pre>
+
+    <pre><code><span class="c-cmt">// Instance Mode 語法</span>
+<span class="c-kw">new</span> <span class="c-fn">p5</span>(<span class="c-kw">function</span>(<span class="c-var">p</span>) {
+
+  <span class="c-cmt">// 所有 p5 功能都透過 p. 存取</span>
+  <span class="c-var">p</span>.setup = <span class="c-kw">function</span>() {
+    <span class="c-kw">let</span> <span class="c-var">canvas</span> = <span class="c-var">p</span>.<span class="c-fn">createCanvas</span>(<span class="c-num">400</span>, <span class="c-num">400</span>);
+    <span class="c-var">canvas</span>.<span class="c-fn">parent</span>(<span class="c-str">'my-canvas'</span>); <span class="c-cmt">// 放進指定 div</span>
+  };
+
+  <span class="c-var">p</span>.draw = <span class="c-kw">function</span>() {
+    <span class="c-var">p</span>.<span class="c-fn">background</span>(<span class="c-num">15</span>);
+    <span class="c-var">p</span>.<span class="c-fn">fill</span>(<span class="c-num">255</span>, <span class="c-num">69</span>, <span class="c-num">0</span>);
+    <span class="c-var">p</span>.<span class="c-fn">ellipse</span>(<span class="c-var">p</span>.mouseX, <span class="c-var">p</span>.mouseY, <span class="c-num">20</span>);
+  };
+
+}, <span class="c-str">'my-canvas'</span>); <span class="c-cmt">// 第二個參數也可以直接指定容器</span></code></pre>
+
+    <div class="tip">⚠️ <strong>CSS canvas 尺寸陷阱：圓形變橢圓</strong><br>
+    p5 canvas 有固定的像素解析度（例如 520×460）。<br>
+    若在 CSS 設 <code>canvas { width: 100%; }</code>，只改變「顯示大小」，
+    不改變「內部解析度」，導致所有圓形被拉成橢圓！<br><br>
+    <strong>正確做法：</strong><br>
+    <code>canvas { max-width: 100%; }</code> — 可縮小但不拉伸<br>
+    搭配容器 <code>display: flex; align-items: center;</code> 讓 canvas 置中。
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>5-2 calling-p5-js-from-javascript（按鈕控制 p5）</h3>
+    <p>來自 <code>p5.js_with_html/4</code> 練習的進階版：HTML 按鈕可以呼叫 p5 sketch 內部的函式。<br>
+    在 <code>interactive.html</code> 的「00b 區塊」可以看到完整示範（<code>p5/demo-js-to-p5.js</code>）。</p>
+
+    <pre><code><span class="c-cmt">// ① sketch 內部：建立「對外接口物件」</span>
+<span class="c-kw">const</span> <span class="c-var">shapeCtrl</span> = {}; <span class="c-cmt">// 在 new p5() 之前宣告！</span>
+
+<span class="c-kw">new</span> <span class="c-fn">p5</span>(<span class="c-kw">function</span>(<span class="c-var">p</span>) {
+  <span class="c-kw">let</span> <span class="c-var">currentShape</span> = <span class="c-str">'circle'</span>;
+
+  <span class="c-var">p</span>.setup = <span class="c-kw">function</span>() { <span class="c-var">p</span>.<span class="c-fn">createCanvas</span>(<span class="c-num">480</span>, <span class="c-num">400</span>); };
+  <span class="c-var">p</span>.draw  = <span class="c-kw">function</span>() { <span class="c-cmt">/* 繪製 currentShape ... */</span> };
+
+  <span class="c-cmt">// ② 把函式掛到接口物件上（HTML 按鈕可見）</span>
+  <span class="c-var">shapeCtrl</span>.nextShape = <span class="c-kw">function</span>() {
+    currentShape = <span class="c-str">'square'</span>; <span class="c-cmt">// 修改 sketch 內部變數</span>
+  };
+
+  <span class="c-var">shapeCtrl</span>.setColor = <span class="c-kw">function</span>(<span class="c-var">hex</span>) {
+    currentColor = hex;        <span class="c-cmt">// 接受 HTML 按鈕傳入的參數</span>
+  };
+
+  <span class="c-var">shapeCtrl</span>.clear = <span class="c-kw">function</span>() {
+    shapes = [];               <span class="c-cmt">// 清空畫布上的形狀</span>
+  };
+
+}, <span class="c-str">'jtop5-canvas'</span>); <span class="c-cmt">// 掛到 HTML 容器</span></code></pre>
+
+    <pre><code><span class="c-cmt">&lt;!-- ③ HTML 按鈕：onclick 直接呼叫接口物件的函式 --&gt;</span>
+<span class="c-tag">&lt;button</span> <span class="c-attr">onclick</span>=<span class="c-str">"shapeCtrl.nextShape()"</span><span class="c-tag">&gt;</span>切換形狀<span class="c-tag">&lt;/button&gt;</span>
+<span class="c-tag">&lt;button</span> <span class="c-attr">onclick</span>=<span class="c-str">"shapeCtrl.setColor('#1a2980')"</span><span class="c-tag">&gt;</span>深藍<span class="c-tag">&lt;/button&gt;</span>
+<span class="c-tag">&lt;button</span> <span class="c-attr">onclick</span>=<span class="c-str">"shapeCtrl.setSize(80)"</span><span class="c-tag">&gt;</span>大<span class="c-tag">&lt;/button&gt;</span>
+<span class="c-tag">&lt;button</span> <span class="c-attr">onclick</span>=<span class="c-str">"shapeCtrl.clear()"</span><span class="c-tag">&gt;</span>清空<span class="c-tag">&lt;/button&gt;</span></code></pre>
+
+    <div class="tip">關鍵原則：接口物件（shapeCtrl）必須在 <code>new p5()</code> 之前宣告，才能讓 HTML 找到它。各 sketch 的接口物件不同（如 <code>mouseDraw</code>、<code>keyboardArt</code>、<code>webgl3d</code>、<code>shapeCtrl</code>）。</div>
+  </div>
+
+  <div class="section">
+    <h3>5-2b calling-javascript-from-p5-js（p5 呼叫 JS 更新 DOM）</h3>
+    <p>反向模式：p5 sketch 內部的事件（碰壁、碰撞、滑鼠位置）呼叫外部 JavaScript 函式，即時更新 HTML 元素。<br>
+    在 <code>interactive.html</code> 的「00 區塊」可以看到完整示範（<code>p5/interactive-p5-to-js.js</code>）。</p>
+
+    <pre><code><span class="c-cmt">// ① 在 new p5() 之外定義「要被呼叫的」JS 函式</span>
+<span class="c-kw">function</span> <span class="c-fn">onBallHitWall</span>() {
+  <span class="c-cmt">// 更新 HTML 元素（DOM 操作）</span>
+  <span class="c-kw">const</span> <span class="c-var">el</span> = document.<span class="c-fn">getElementById</span>(<span class="c-str">'wall-count'</span>);
+  <span class="c-var">el</span>.textContent = ++wallHits;
+}
+
+<span class="c-kw">new</span> <span class="c-fn">p5</span>(<span class="c-kw">function</span>(<span class="c-var">p</span>) {
+  <span class="c-var">p</span>.draw = <span class="c-kw">function</span>() {
+    <span class="c-cmt">// ② p5 內部事件觸發 → 呼叫外部函式</span>
+    <span class="c-kw">if</span> (ball.x &lt; 0) {
+      ball.vx *= -<span class="c-num">1</span>;
+      <span class="c-fn">onBallHitWall</span>(); <span class="c-cmt">// ← 直接呼叫外部函式！</span>
+    }
+  };
+});</code></pre>
+
+    <pre><code><span class="c-cmt">&lt;!-- ③ HTML：靜態等待被更新的元素 --&gt;</span>
+<span class="c-tag">&lt;div</span> <span class="c-attr">id</span>=<span class="c-str">"wall-count"</span><span class="c-tag">&gt;</span>0<span class="c-tag">&lt;/div&gt;</span></code></pre>
+
+    <div class="tip">這兩個模式是「雙向通訊」：<br>
+    p5 → JS（calling-js-from-p5）：p5 事件更新 HTML 顯示<br>
+    JS → p5（calling-p5-from-js）：HTML 按鈕控制 sketch 行為</div>
+  </div>
+
+  <div class="section">
+    <h3>5-3 3D WebGL 模式</h3>
+    <pre><code><span class="c-var">p</span>.setup = <span class="c-kw">function</span>() {
+  <span class="c-cmt">// 第三個參數 WEBGL：啟用 3D 模式！</span>
+  <span class="c-var">p</span>.<span class="c-fn">createCanvas</span>(<span class="c-num">560</span>, <span class="c-num">420</span>, <span class="c-var">p</span>.WEBGL);
+};
+
+<span class="c-var">p</span>.draw = <span class="c-kw">function</span>() {
+  <span class="c-var">p</span>.<span class="c-fn">background</span>(<span class="c-num">15</span>);
+  <span class="c-var">p</span>.<span class="c-fn">directionalLight</span>(<span class="c-num">255</span>, <span class="c-num">80</span>, <span class="c-num">30</span>, <span class="c-num">1</span>, -<span class="c-num">1</span>, -<span class="c-num">1</span>); <span class="c-cmt">// 方向光</span>
+  <span class="c-var">p</span>.<span class="c-fn">specularMaterial</span>(<span class="c-num">240</span>, <span class="c-num">90</span>, <span class="c-num">40</span>);             <span class="c-cmt">// 金屬材質</span>
+  <span class="c-var">p</span>.<span class="c-fn">rotateY</span>(<span class="c-var">p</span>.frameCount * <span class="c-num">0.01</span>);               <span class="c-cmt">// 每幀旋轉</span>
+  <span class="c-var">p</span>.<span class="c-fn">box</span>(<span class="c-num">100</span>);                                    <span class="c-cmt">// 畫正方體</span>
+};</code></pre>
+  </div>
+</div>
+
+<!-- ══════ 第六章 ══════ -->
+<div class="chapter" id="ch6">
+  <p class="chapter-num">Chapter 06</p>
+  <h2>逐步建站：龍蝦俠網站完整流程</h2>
+
+  <div class="section">
+    <h3>6-1 資料夾結構</h3>
+    <p>先建立好以下資料夾和空白檔案，再逐步填入內容：</p>
+    <div class="file-tree">
+<span class="dir">Artist_Website/</span>
+├── <span class="file">index.html</span>      <span class="note">← 首頁</span>
+├── <span class="file">about.html</span>      <span class="note">← 關於</span>
+├── <span class="file">works.html</span>      <span class="note">← 作品集</span>
+├── <span class="file">interactive.html</span> <span class="note">← 互動體驗</span>
+├── <span class="file">contact.html</span>    <span class="note">← 聯絡</span>
+├── <span class="dir">css/</span>
+│   ├── <span class="file">reset.css</span>      <span class="note">← CSS 歸零</span>
+│   ├── <span class="file">variables.css</span>  <span class="note">← 設計變數</span>
+│   └── <span class="file">style.css</span>      <span class="note">← 共用樣式</span>
+├── <span class="dir">js/</span>
+│   └── <span class="file">main.js</span>        <span class="note">← 共用 JavaScript</span>
+└── <span class="dir">p5/</span>
+    ├── <span class="file">hero-sketch.js</span>          <span class="note">← index.html 第2區粒子動態背景</span>
+    ├── <span class="file">interactive-p5-to-js.js</span>  <span class="note">← 00區：p5呼叫JS（色彩感應儀）</span>
+    ├── <span class="file">demo-js-to-p5.js</span>         <span class="note">← 00b區：JS呼叫p5（形狀控制器）</span>
+    ├── <span class="file">interactive-mouse.js</span>
+    ├── <span class="file">interactive-keyboard.js</span>
+    ├── <span class="file">interactive-3d.js</span>
+    ├── <span class="file">interactive-camera.js</span>
+    └── <span class="file">interactive-sound.js</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>6-2 建站步驟總覽</h3>
+
+    <div class="step">
+      <div class="step-num">Step 1 — 基礎 CSS 系統</div>
+      <h4>建立設計基礎（必須最先完成）</h4>
+      <p>開啟 <code>css/reset.css</code>、<code>css/variables.css</code>、<code>css/style.css</code>，複製龍蝦俠範例的內容。這三個檔案是整個網站的地基。</p>
+      <p>建立 <code>js/main.js</code>，複製範例內容（導覽列、進場動畫、漢堡選單等功能都在這裡）。</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 2 — 共用 HTML 骨架</div>
+      <h4>每個頁面的 &lt;header&gt; 和 &lt;footer&gt; 都是一樣的</h4>
+      <p>先建立一個「模板」，之後每個新頁面都從這個模板複製，只改 <code>&lt;main&gt;</code> 裡的內容。</p>
+      <pre><code><span class="c-cmt">&lt;!-- 每個頁面都相同的 header --&gt;</span>
+<span class="c-tag">&lt;header</span> <span class="c-attr">class</span>=<span class="c-str">"site-header"</span><span class="c-tag">&gt;</span>
+  <span class="c-tag">&lt;nav</span> <span class="c-attr">class</span>=<span class="c-str">"site-nav"</span><span class="c-tag">&gt;</span>
+    <span class="c-tag">&lt;div</span> <span class="c-attr">class</span>=<span class="c-str">"container"</span><span class="c-tag">&gt;</span>
+      <span class="c-tag">&lt;a</span> <span class="c-attr">href</span>=<span class="c-str">"index.html"</span> <span class="c-attr">class</span>=<span class="c-str">"nav-logo"</span><span class="c-tag">&gt;</span>龍蝦俠<span class="c-tag">&lt;/a&gt;</span>
+      <span class="c-tag">&lt;ul</span> <span class="c-attr">class</span>=<span class="c-str">"nav-links"</span><span class="c-tag">&gt;</span>
+        <span class="c-tag">&lt;li&gt;&lt;a</span> <span class="c-attr">href</span>=<span class="c-str">"index.html"</span><span class="c-tag">&gt;</span>首頁<span class="c-tag">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="c-tag">&lt;li&gt;&lt;a</span> <span class="c-attr">href</span>=<span class="c-str">"about.html"</span><span class="c-tag">&gt;</span>關於<span class="c-tag">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="c-tag">&lt;li&gt;&lt;a</span> <span class="c-attr">href</span>=<span class="c-str">"works.html"</span><span class="c-tag">&gt;</span>作品集<span class="c-tag">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="c-tag">&lt;li&gt;&lt;a</span> <span class="c-attr">href</span>=<span class="c-str">"interactive.html"</span><span class="c-tag">&gt;</span>互動體驗<span class="c-tag">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="c-tag">&lt;li&gt;&lt;a</span> <span class="c-attr">href</span>=<span class="c-str">"contact.html"</span><span class="c-tag">&gt;</span>聯絡<span class="c-tag">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="c-tag">&lt;/ul&gt;</span>
+      <span class="c-tag">&lt;button</span> <span class="c-attr">class</span>=<span class="c-str">"nav-toggle"</span> <span class="c-attr">aria-label</span>=<span class="c-str">"開啟選單"</span><span class="c-tag">&gt;</span>
+        <span class="c-tag">&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;</span>
+      <span class="c-tag">&lt;/button&gt;</span>
+    <span class="c-tag">&lt;/div&gt;</span>
+  <span class="c-tag">&lt;/nav&gt;</span>
+<span class="c-tag">&lt;/header&gt;</span></code></pre>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3 — 個別頁面內容</div>
+      <h4>依序建立各頁面的 &lt;main&gt; 內容</h4>
+      <p>建議順序：<code>contact.html</code>（最簡單）→ <code>about.html</code> → <code>works.html</code> → <code>index.html</code> → <code>interactive.html</code>（最複雜）</p>
+      <p>每個頁面都參考龍蝦俠範例的 HTML 結構，理解每個區塊的用途後，替換成自己的內容（藝術家名稱、作品圖片、自述文字等）。</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 4 — 替換個人內容</div>
+      <h4>把「龍蝦俠」換成你自己</h4>
+      <p>搜尋並替換以下內容：</p>
+      <table>
+        <tr><th>替換目標</th><th>替換為</th></tr>
+        <tr><td>龍蝦俠</td><td>你的藝術家名稱</td></tr>
+        <tr><td>lobster@artmail.com</td><td>你的電子郵件</td></tr>
+        <tr><td>@lobsterman.art</td><td>你的 Instagram</td></tr>
+        <tr><td><code>#ff4500</code>（橘紅色）</td><td>你的品牌色（在 variables.css）</td></tr>
+        <tr><td>CSS 漸層佔位圖</td><td>你的實際作品圖片</td></tr>
+      </table>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 5 — p5.js Sketch</div>
+      <h4>客製化生成藝術效果</h4>
+      <p>開啟 <code>p5/</code> 資料夾內的各 sketch 檔案，調整常數區（大寫變數）來改變視覺效果：</p>
+      <pre><code><span class="c-cmt">// p5/hero-sketch.js：調整頂部的常數區塊</span>
+<span class="c-cmt">// ──────────────────────────────────────</span>
+
+<span class="c-cmt">// 粒子數量：120 → 越多越密</span>
+<span class="c-kw">const</span> <span class="c-var">PARTICLE_COUNT</span>   = <span class="c-num">120</span>;
+
+<span class="c-cmt">// 連線距離：100px → 越大連線越多</span>
+<span class="c-kw">const</span> <span class="c-var">MAX_CONNECT_DIST</span> = <span class="c-num">100</span>;
+
+<span class="c-cmt">// 拖尾長度：25 → 數字越小，拖尾越長</span>
+<span class="c-kw">const</span> <span class="c-var">TRAIL_ALPHA</span>      = <span class="c-num">25</span>;
+
+<span class="c-cmt">// 粒子顏色：換成你喜歡的色彩組合</span>
+<span class="c-kw">const</span> <span class="c-var">COLORS</span> = [<span class="c-str">'#ff4500'</span>, <span class="c-str">'#ff8c00'</span>, <span class="c-str">'#ffffff'</span>, <span class="c-str">'#aaaaaa'</span>];</code></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>6-3 測試與除錯</h3>
+    <div class="tip">
+      每次修改後，<strong>按 F12</strong>（或右鍵→「檢查」）開啟瀏覽器開發者工具：
+      <ul style="margin-top:0.8rem; padding-left:1.6rem; list-style: disc;">
+        <li><strong>Console 標籤</strong>：查看 JavaScript 錯誤（紅色文字）</li>
+        <li><strong>Elements 標籤</strong>：即時看到 HTML 結構和 CSS 效果</li>
+        <li><strong>Network 標籤</strong>：確認 CSS / JS / 圖片是否正確載入</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- end chapter 6 -->
+
+<div style="text-align:center; padding: 6rem 0 2rem; color: var(--muted); font-size:1.3rem;">
+  <p>🦞 龍蝦俠新媒體藝術家網站製作講義 · 網頁創意設計課程</p>
+  <p style="margin-top:0.8rem">完成後，請繼續閱讀 <strong>GitHub 部署講義</strong> 將網站上線！</p>
+</div>
+
+</div><!-- end .content -->
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Pages 部署講義 — 龍蝦俠新媒體藝術家網站</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg:#0e0e0e; --bg2:#161616; --bg3:#1e1e1e;
+  --accent:#ff4500; --text:#e8e8e8; --muted:#888;
+  --border:rgba(255,255,255,0.08);
+  --green:#2ecc71; --blue:#3498db; --yellow:#f1c40f; --purple:#9b59b6;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:62.5%;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:1.5rem;line-height:1.8;padding-bottom:8rem}
+
+.doc-header{background:linear-gradient(135deg,#0e0e0e 0%,#001a0e 50%,#0e0e0e 100%);border-bottom:2px solid var(--green);padding:5rem 4rem 4rem;text-align:center}
+.doc-header .course-tag{font-size:1.1rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--green);margin-bottom:1.2rem}
+.doc-header h1{font-family:'Noto Serif TC',serif;font-size:3.2rem;font-weight:700;line-height:1.3;margin-bottom:1.2rem}
+.doc-header .subtitle{color:var(--muted);font-size:1.4rem}
+.doc-header .meta{margin-top:2rem;display:flex;justify-content:center;gap:3rem;font-size:1.2rem;color:var(--muted);flex-wrap:wrap}
+
+.toc{max-width:860px;margin:4rem auto;padding:0 2rem}
+.toc-box{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:8px;padding:2.4rem 3rem}
+.toc-box h2{font-size:1.3rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--green);margin-bottom:1.6rem}
+.toc-list{list-style:none}
+.toc-list>li{margin-bottom:0.8rem}
+.toc-list>li>a{color:var(--text);text-decoration:none;font-weight:500;font-size:1.4rem;transition:color 0.2s}
+.toc-list>li>a:hover{color:var(--green)}
+.toc-num{display:inline-block;width:2.4rem;color:var(--green);font-weight:700}
+
+.content{max-width:860px;margin:0 auto;padding:0 2rem}
+
+.chapter{margin-top:6rem;padding-top:2rem;border-top:1px solid var(--border)}
+.chapter-num{font-size:1.1rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--green);margin-bottom:0.8rem}
+.chapter h2{font-family:'Noto Serif TC',serif;font-size:2.4rem;font-weight:700;margin-bottom:1.6rem}
+.chapter p{color:#ccc;line-height:1.9;margin-bottom:1.4rem}
+.chapter p strong{color:var(--text);font-weight:600}
+
+.section{margin-top:3.6rem}
+.section h3{font-size:1.8rem;font-weight:700;margin-bottom:1.2rem;padding-left:1.2rem;border-left:3px solid var(--green)}
+.section p{color:#ccc;line-height:1.9;margin-bottom:1.2rem}
+
+.step{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:2rem 2.4rem;margin:1.6rem 0;position:relative}
+.step-num{position:absolute;top:-1.2rem;left:2rem;background:var(--green);color:#000;font-size:1.1rem;font-weight:700;padding:0.2rem 1rem;border-radius:20px;letter-spacing:0.05em}
+.step h4{font-size:1.5rem;font-weight:700;margin-bottom:0.8rem}
+.step p{color:#bbb;font-size:1.4rem;line-height:1.8;margin-bottom:0.8rem}
+.step ul{padding-left:1.8rem;color:#bbb;font-size:1.4rem;line-height:1.9}
+.step ul li{margin-bottom:0.4rem;list-style:disc}
+
+pre{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:2rem;overflow-x:auto;margin:1.6rem 0;position:relative}
+.code-label{position:absolute;top:0.8rem;right:1.2rem;font-size:1.1rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+pre code{font-family:'JetBrains Mono',monospace;font-size:1.3rem;line-height:1.8;color:#e6edf3;display:block}
+
+/* 語法高亮 */
+.c-cmd   { color: #7ee787; }   /* 指令/命令 */
+.c-flag  { color: #79c0ff; }   /* 參數旗標 */
+.c-str   { color: #a5d6ff; }   /* 字串/路徑 */
+.c-out   { color: #8b949e; }   /* 輸出結果 */
+.c-prompt{ color: #ff7b72; }   /* 提示字元 */
+.c-cmt   { color: #8b949e; font-style:italic; }
+
+.tip,.warning,.concept,.success{border-radius:8px;padding:1.6rem 2rem;margin:1.6rem 0;font-size:1.4rem;line-height:1.8}
+.tip{background:rgba(46,204,113,0.08);border-left:4px solid var(--green);color:#aef}
+.tip::before{content:'💡 提示：';font-weight:700;color:var(--green);display:block;margin-bottom:0.4rem}
+.warning{background:rgba(255,69,0,0.08);border-left:4px solid var(--accent);color:#fcc}
+.warning::before{content:'⚠️ 注意：';font-weight:700;color:var(--accent);display:block;margin-bottom:0.4rem}
+.concept{background:rgba(52,152,219,0.08);border-left:4px solid var(--blue);color:#bdf}
+.concept::before{content:'📖 概念：';font-weight:700;color:var(--blue);display:block;margin-bottom:0.4rem}
+.success{background:rgba(46,204,113,0.08);border-left:4px solid var(--green);color:#afa}
+.success::before{content:'✅ 完成：';font-weight:700;color:var(--green);display:block;margin-bottom:0.4rem}
+
+table{width:100%;border-collapse:collapse;margin:1.6rem 0;font-size:1.3rem}
+th{background:var(--bg3);color:var(--green);font-weight:700;padding:1rem 1.4rem;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:1rem 1.4rem;border-bottom:1px solid var(--border);color:#ccc}
+td code{background:var(--bg3);padding:0.1rem 0.5rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:1.2rem}
+tr:hover td{background:var(--bg2)}
+
+kbd{background:var(--bg3);border:1px solid #444;border-radius:4px;padding:0.1rem 0.6rem;font-family:'JetBrains Mono',monospace;font-size:1.2rem}
+
+/* OS 切換標籤 */
+.os-tabs{margin:1.6rem 0}
+.os-tab-btns{display:flex;gap:0}
+.os-tab-btn{padding:0.8rem 2rem;font-size:1.3rem;font-weight:700;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all 0.2s}
+.os-tab-btn:first-child{border-radius:8px 0 0 8px}
+.os-tab-btn:last-child{border-radius:0 8px 8px 0;border-left:none}
+.os-tab-btn.active{background:var(--bg2);color:var(--text);border-color:var(--green)}
+.os-panel{display:none;background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:2.4rem}
+.os-panel.active{display:block}
+
+/* 流程圖 */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:0.4rem;margin:2rem 0}
+.flow-item{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.8rem 1.4rem;font-size:1.3rem;font-weight:600;text-align:center}
+.flow-arrow{color:var(--green);font-size:1.8rem;flex-shrink:0}
+.flow-item.done{border-color:var(--green);color:var(--green)}
+
+/* 命令列終端機外觀 */
+.terminal{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin:1.6rem 0;overflow:hidden}
+.terminal-bar{background:#161b22;padding:0.8rem 1.4rem;display:flex;align-items:center;gap:0.6rem}
+.terminal-dot{width:12px;height:12px;border-radius:50%}
+.terminal-dot.red{background:#ff5f57}
+.terminal-dot.yellow{background:#febc2e}
+.terminal-dot.green{background:#28c840}
+.terminal-title{margin-left:auto;font-size:1.2rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.terminal-body{
+  padding:1.6rem 2rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.3rem;
+  line-height:1.8;
+  white-space: pre-wrap;    /* ← 保留換行與空格，確保每行指令各自成行 */
+  word-break: break-all;    /* ← 超長路徑自動換行，不破版 */
+  overflow-x: auto;         /* ← 極長單行可橫向捲動 */
+}
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <p class="course-tag">網頁創意設計 · 新媒體藝術學系</p>
+  <h1>GitHub Pages 部署講義<br>把龍蝦俠網站發佈到網路上</h1>
+  <p class="subtitle">從安裝 Git 到 GitHub Pages 上線，完整的版本控制與網站發佈流程</p>
+  <div class="meta">
+    <span>🔧 工具：Git + GitHub + VSCode</span>
+    <span>💻 支援：macOS / Windows</span>
+    <span>🌐 目標：免費靜態網站部署</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-box">
+    <h2>目錄</h2>
+    <ul class="toc-list">
+      <li><a href="#ch1"><span class="toc-num">01</span>什麼是 Git 和 GitHub？</a></li>
+      <li><a href="#ch2"><span class="toc-num">02</span>安裝 Git（Mac / Windows 詳細說明）</a></li>
+      <li><a href="#ch3"><span class="toc-num">03</span>設定 Git 基本資料</a></li>
+      <li><a href="#ch4"><span class="toc-num">04</span>申請 GitHub 帳號</a></li>
+      <li><a href="#ch5"><span class="toc-num">05</span>安裝 VSCode 與 Git 擴充套件</a></li>
+      <li><a href="#ch6"><span class="toc-num">06</span>建立 Repository 並連結本機</a></li>
+      <li><a href="#ch7"><span class="toc-num">07</span>第一次上傳：commit &amp; push</a></li>
+      <li><a href="#ch8"><span class="toc-num">08</span>開啟 GitHub Pages</a></li>
+      <li><a href="#ch9"><span class="toc-num">09</span>日常更新工作流程</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════ 第一章 ══════ -->
+<div class="chapter" id="ch1">
+  <p class="chapter-num">Chapter 01</p>
+  <h2>什麼是 Git 和 GitHub？</h2>
+
+  <div class="concept">
+    <strong>Git</strong> 是「版本控制系統」：把每次修改都記錄下來，可以隨時回到過去的版本。就像文件的「無限復原」功能，但更強大。<br><br>
+    <strong>GitHub</strong> 是「雲端的 Git 倉庫」：把 Git 管理的檔案同步到網路上。既可以備份，也可以讓別人看到，還能開啟 GitHub Pages 把網站公開上線。
+  </div>
+
+  <div class="section">
+    <h3>1-1 核心概念一覽</h3>
+    <table>
+      <tr><th>術語</th><th>白話解釋</th><th>對應操作</th></tr>
+      <tr><td>Repository（Repo）</td><td>一個專案的資料夾，Git 在裡面記錄所有歷史</td><td>在 GitHub 建立新倉庫</td></tr>
+      <tr><td>Commit</td><td>「存檔」：把目前的修改打包並加上說明</td><td><code>git commit -m "說明"</code></td></tr>
+      <tr><td>Push</td><td>「上傳」：把本機的 commit 傳到 GitHub</td><td><code>git push</code></td></tr>
+      <tr><td>Pull</td><td>「下載」：把 GitHub 的最新版本同步到本機</td><td><code>git pull</code></td></tr>
+      <tr><td>Clone</td><td>「複製」：把 GitHub 上的 repo 下載到本機</td><td><code>git clone 網址</code></td></tr>
+      <tr><td>Branch</td><td>「分支」：平行開發不同版本的機制</td><td>進階功能，本課程以 main 為主</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>1-2 完整流程一覽</h3>
+    <div class="flow">
+      <div class="flow-item">安裝 Git</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">設定名字/Email</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">申請 GitHub</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">建立 Repo</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">本機連結</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">commit &amp; push</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item done">🌐 上線！</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 第二章 ══════ -->
+<div class="chapter" id="ch2">
+  <p class="chapter-num">Chapter 02</p>
+  <h2>安裝 Git</h2>
+
+  <div class="os-tabs" id="install-tabs">
+    <div class="os-tab-btns">
+      <button class="os-tab-btn active" onclick="switchTab('install','mac')">🍎 macOS</button>
+      <button class="os-tab-btn" onclick="switchTab('install','win')">🪟 Windows</button>
+    </div>
+
+    <!-- Mac 版 -->
+    <div class="os-panel active" id="install-mac">
+
+      <div class="step">
+        <div class="step-num">Step 1</div>
+        <h4>確認是否已安裝</h4>
+        <p>開啟「終端機」（Terminal）應用程式，輸入：</p>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+            <span class="terminal-title">Terminal</span>
+          </div>
+          <div class="terminal-body">
+<span class="c-cmt"># 輸入以下指令並按 Enter</span>
+
+<span class="c-prompt">$</span> <span class="c-cmd">git --version</span>
+
+<span class="c-cmt">▸ 如果已安裝，會看到版本號：</span>
+<span class="c-out">git version 2.39.3 (Apple Git-145)</span>
+
+<span class="c-cmt">▸ 如果未安裝，會看到錯誤：</span>
+<span class="c-out">zsh: command not found: git</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 2A（推薦）</div>
+        <h4>透過 Homebrew 安裝（如果有的話）</h4>
+        <p>Homebrew 是 macOS 的套件管理器，安裝後管理工具非常方便。</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><span class="terminal-title">Terminal</span></div>
+          <div class="terminal-body">
+<span class="c-cmt"># 安裝 Homebrew（如果還沒有）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">/bin/bash</span> <span class="c-flag">-c</span> <span class="c-str">"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</span>
+
+<span class="c-cmt"># 用 Homebrew 安裝 Git</span>
+<span class="c-prompt">$</span> <span class="c-cmd">brew install git</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 2B（備選）</div>
+        <h4>透過 Xcode Command Line Tools 安裝</h4>
+        <p>如果沒有 Homebrew，輸入以下指令後，按照彈出視窗的指示安裝：</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><span class="terminal-title">Terminal</span></div>
+          <div class="terminal-body">
+<span class="c-prompt">$</span> <span class="c-cmd">xcode-select --install</span>
+<span class="c-out">← 會彈出安裝視窗，點「安裝」，等待完成即可</span>
+          </div>
+        </div>
+        <p style="margin-top:1rem">安裝完成後，再次執行 <code>git --version</code> 確認成功。</p>
+      </div>
+
+    </div><!-- end mac panel -->
+
+    <!-- Windows 版 -->
+    <div class="os-panel" id="install-win">
+
+      <div class="step">
+        <div class="step-num">Step 1</div>
+        <h4>下載 Git for Windows</h4>
+        <p>前往官網下載安裝程式：</p>
+        <p><strong>🔗 https://git-scm.com/download/win</strong></p>
+        <p>點擊「Click here to download」，下載 64-bit 版本的安裝程式（.exe 檔）。</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 2</div>
+        <h4>執行安裝程式 — 各選項說明</h4>
+        <p>執行下載的 .exe 檔，以下是安裝過程中每個選項的建議設定：</p>
+
+        <table>
+          <tr><th>安裝畫面標題</th><th>建議選擇</th><th>說明</th></tr>
+          <tr>
+            <td>Select Components</td>
+            <td>維持預設勾選<br>+ 勾選「Add a Git Bash Profile to Windows Terminal」</td>
+            <td>Windows Terminal 整合，讓 Git Bash 更好用</td>
+          </tr>
+          <tr>
+            <td>Choosing the default editor used by Git</td>
+            <td><strong>Use Visual Studio Code as Git's default editor</strong></td>
+            <td>用 VSCode 編輯 commit 訊息，比 Vim 友善</td>
+          </tr>
+          <tr>
+            <td>Adjusting the name of the initial branch</td>
+            <td><strong>Override the default branch name: main</strong></td>
+            <td>GitHub 預設用 main，保持一致避免混亂</td>
+          </tr>
+          <tr>
+            <td>Adjusting your PATH environment</td>
+            <td><strong>Git from the command line and also from 3rd-party software</strong></td>
+            <td>讓 Windows 命令提示字元和 VSCode 終端機都能用 git 指令</td>
+          </tr>
+          <tr>
+            <td>Choosing the SSH executable</td>
+            <td><strong>Use bundled OpenSSH</strong></td>
+            <td>使用 Git 內建的 SSH（預設即可）</td>
+          </tr>
+          <tr>
+            <td>Choosing HTTPS transport backend</td>
+            <td><strong>Use the OpenSSL library</strong></td>
+            <td>預設即可</td>
+          </tr>
+          <tr>
+            <td>Configuring the line ending conversions</td>
+            <td><strong>Checkout Windows-style, commit Unix-style line endings</strong></td>
+            <td>Windows 和 Mac/Linux 換行符不同，這個設定自動處理</td>
+          </tr>
+          <tr>
+            <td>Configuring the terminal emulator</td>
+            <td><strong>Use MinTTY (the default terminal of MSYS2)</strong></td>
+            <td>Git Bash 的終端機，顯示效果較好</td>
+          </tr>
+          <tr>
+            <td>Choose the default behavior of `git pull`</td>
+            <td><strong>Default (fast-forward or merge)</strong></td>
+            <td>預設即可</td>
+          </tr>
+          <tr>
+            <td>Choose a credential helper</td>
+            <td><strong>Git Credential Manager</strong></td>
+            <td>儲存 GitHub 登入資訊，不用每次重新輸入密碼</td>
+          </tr>
+          <tr>
+            <td>Configuring extra options</td>
+            <td>勾選 <strong>Enable file system caching</strong></td>
+            <td>提升效能，建議啟用</td>
+          </tr>
+          <tr>
+            <td>Configuring experimental options</td>
+            <td>維持不勾選</td>
+            <td>實驗性功能，穩定性尚不確定</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Step 3</div>
+        <h4>確認安裝成功</h4>
+        <p>安裝完成後，開啟「Git Bash」（在開始選單搜尋），輸入：</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><span class="terminal-title">Git Bash</span></div>
+          <div class="terminal-body">
+<span class="c-cmt"># 輸入以下指令確認</span>
+
+<span class="c-prompt">$</span> <span class="c-cmd">git --version</span>
+
+<span class="c-cmt">▸ 看到版本號就代表安裝成功：</span>
+<span class="c-out">git version 2.44.0.windows.1</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end windows panel -->
+  </div><!-- end os-tabs -->
+</div>
+
+<!-- ══════ 第三章 ══════ -->
+<div class="chapter" id="ch3">
+  <p class="chapter-num">Chapter 03</p>
+  <h2>設定 Git 基本資料</h2>
+  <p>Git 每次 commit 都會記錄「是誰做的修改」。在開始使用之前，必須告訴 Git 你的名字和 Email。<strong>這個設定只需要做一次。</strong></p>
+
+  <div class="terminal">
+    <div class="terminal-bar"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><span class="terminal-title">Terminal / Git Bash</span></div>
+    <div class="terminal-body">
+<span class="c-cmt"># 1. 設定使用者名稱（換成你自己的名字）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git config --global</span> user.name <span class="c-str">"龍蝦俠"</span>
+
+<span class="c-cmt"># 2. 設定 Email（換成你申請 GitHub 的 Email）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git config --global</span> user.email <span class="c-str">"lobster@artmail.com"</span>
+
+<span class="c-cmt"># 3. 確認設定是否正確</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git config --global --list</span>
+
+<span class="c-cmt">▸ 應看到以下輸出：</span>
+<span class="c-out">user.name=龍蝦俠</span>
+<span class="c-out">user.email=lobster@artmail.com</span>
+    </div>
+  </div>
+
+  <div class="tip"><code>--global</code> 表示這個設定套用到你電腦上所有的 Git 專案。如果某個專案需要不同的名字/Email，可以在那個專案的資料夾裡執行不含 <code>--global</code> 的版本。</div>
+</div>
+
+<!-- ══════ 第四章 ══════ -->
+<div class="chapter" id="ch4">
+  <p class="chapter-num">Chapter 04</p>
+  <h2>申請 GitHub 帳號</h2>
+
+  <div class="step">
+    <div class="step-num">Step 1</div>
+    <h4>前往 GitHub 官網</h4>
+    <p><strong>🔗 https://github.com</strong></p>
+    <p>點擊右上角的「Sign up」</p>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2</div>
+    <h4>填寫註冊資料</h4>
+    <ul>
+      <li><strong>Email address</strong>：填入你的電子郵件（建議與 Git 設定相同）</li>
+      <li><strong>Password</strong>：設定強度足夠的密碼</li>
+      <li><strong>Username</strong>：設定你的 GitHub 帳號名稱<br>
+        ⚠️ 這個名稱很重要！你的網站網址會是 <code>https://你的帳號名稱.github.io</code><br>
+        建議使用：藝術家名稱英文版（如 <code>lobsterman-art</code>）</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 3</div>
+    <h4>驗證帳號</h4>
+    <p>完成 GitHub 寄出的 Email 驗證連結，帳號就建立完成。</p>
+  </div>
+
+  <div class="warning">GitHub 帳號名稱（Username）一旦設定後雖然可以更改，但更改後舊的網址會失效。選擇前請仔細考慮。</div>
+</div>
+
+<!-- ══════ 第五章 ══════ -->
+<div class="chapter" id="ch5">
+  <p class="chapter-num">Chapter 05</p>
+  <h2>安裝 VSCode 與 Git 擴充套件</h2>
+
+  <div class="step">
+    <div class="step-num">Step 1</div>
+    <h4>下載 VSCode</h4>
+    <p><strong>🔗 https://code.visualstudio.com</strong></p>
+    <p>下載對應你系統（Mac / Windows）的版本，按照安裝程式操作。</p>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2</div>
+    <h4>安裝推薦擴充套件</h4>
+    <p>開啟 VSCode，按下 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>（Mac: <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>）開啟擴充套件面板，搜尋並安裝：</p>
+    <table>
+      <tr><th>擴充套件名稱</th><th>用途</th></tr>
+      <tr><td>GitLens — Git supercharged</td><td>在程式碼旁顯示 git blame，視覺化 commit 歷史</td></tr>
+      <tr><td>GitHub Copilot（選用）</td><td>AI 程式碼建議（需要 GitHub 帳號授權）</td></tr>
+      <tr><td>Live Server</td><td>本機預覽網頁，儲存後自動重新整理</td></tr>
+      <tr><td>Prettier</td><td>自動排版程式碼格式</td></tr>
+    </table>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 3</div>
+    <h4>在 VSCode 中登入 GitHub</h4>
+    <p>按下左側面板的「Source Control」圖示（三個點連成 Y 字形），或點選左下角的帳號圖示，選擇「Sign in to GitHub」。</p>
+    <p>瀏覽器會開啟 GitHub 授權頁面，點擊「Authorize」完成授權。</p>
+  </div>
+</div>
+
+<!-- ══════ 第六章 ══════ -->
+<div class="chapter" id="ch6">
+  <p class="chapter-num">Chapter 06</p>
+  <h2>建立 Repository 並連結本機</h2>
+
+  <div class="step">
+    <div class="step-num">Step 1</div>
+    <h4>在 GitHub 建立新 Repository</h4>
+    <ul>
+      <li>登入 GitHub，點擊右上角的「+」→「New repository」</li>
+      <li><strong>Repository name</strong>：填入 <code>你的帳號名稱.github.io</code><br>
+        例如：<code>lobsterman-art.github.io</code><br>
+        ⚠️ 這個名稱格式是啟動 GitHub Pages 的關鍵！</li>
+      <li><strong>Description</strong>：可選填，例如「龍蝦俠新媒體藝術家個人網站」</li>
+      <li><strong>Public / Private</strong>：選 <strong>Public</strong>（公開，GitHub Pages 免費版需要）</li>
+      <li>「Initialize this repository」：<strong>不要勾選</strong>（因為我們本機已有檔案）</li>
+      <li>點擊「Create repository」</li>
+    </ul>
+  </div>
+
+  <!-- ══ Repository name 差異詳細說明（深色主題版）══ -->
+  <div style="background:var(--bg2,#161616); border:1px solid rgba(255,255,255,0.1); border-left:4px solid #ff4500; border-radius:12px; padding:2.4rem 2.8rem; margin:2.4rem 0; color:var(--text,#e8e8e8);">
+
+    <h4 style="font-size:1.8rem; margin-bottom:1.6rem; color:var(--text,#e8e8e8);">📌 Repository name 取名方式差異：完整說明</h4>
+
+    <p style="color:var(--text,#e8e8e8); margin-bottom:1.2rem;">GitHub Pages 提供兩種不同類型的靜態網站，取名方式決定了你的網站 URL：</p>
+
+    <table style="width:100%; border-collapse:collapse; margin:1.6rem 0; font-size:1.4rem; color:var(--text,#e8e8e8);">
+      <thead>
+        <tr style="background:rgba(255,69,0,0.12);">
+          <th style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.12); text-align:left; color:var(--text,#e8e8e8);">Repository name</th>
+          <th style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.12); text-align:left; color:var(--text,#e8e8e8);">類型</th>
+          <th style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.12); text-align:left; color:var(--text,#e8e8e8);">網站 URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.1); color:var(--text,#e8e8e8);"><code style="color:#7ee787;">lobsterman-art.github.io</code><br><small style="color:var(--muted,#888);">（帳號名稱 + .github.io）</small></td>
+          <td style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.1); font-weight:bold; color:#ff7b72;">User Site（使用者網站）</td>
+          <td style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.1); color:var(--text,#e8e8e8);"><code style="color:#79c0ff;">https://lobsterman-art.github.io/</code><br><small style="color:var(--muted,#888);">根目錄，乾淨的網址</small></td>
+        </tr>
+        <tr style="background:rgba(255,255,255,0.03);">
+          <td style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.1); color:var(--text,#e8e8e8);"><code style="color:#7ee787;">my-artist-site</code><br><small style="color:var(--muted,#888);">（任意其他名稱）</small></td>
+          <td style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.1); color:var(--text,#e8e8e8);">Project Site（專案網站）</td>
+          <td style="padding:1rem 1.2rem; border:1px solid rgba(255,255,255,0.1); color:var(--text,#e8e8e8);"><code style="color:#79c0ff;">https://lobsterman-art.github.io/my-artist-site/</code><br><small style="color:var(--muted,#888);">網址後面有 repo 名稱子路徑</small></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4 style="font-size:1.6rem; margin:2rem 0 1rem; color:var(--text,#e8e8e8);">❓ 只填帳號名稱（不加 .github.io）可以發佈靜態網頁嗎？</h4>
+    <p style="color:var(--text,#e8e8e8); margin-bottom:0.8rem;"><strong style="color:#fff;">可以。</strong> 任何名稱的 repo 都能透過 GitHub Pages 發佈靜態網頁，不限於 <code style="color:#7ee787;">帳號.github.io</code>。</p>
+    <p style="color:var(--text,#e8e8e8); margin-bottom:0.8rem;">差異只在於網址結構：</p>
+    <ul style="line-height:2.2; padding-left:2rem; color:var(--text,#e8e8e8);">
+      <li><strong style="color:#fff;">帳號名稱.github.io</strong>（User Site）<br>
+          → 網址：<code style="color:#79c0ff;">https://你的帳號.github.io/</code>（根路徑，最乾淨）<br>
+          → 每個 GitHub 帳號只能有 <strong style="color:#fff;">一個</strong> User Site<br>
+          → <code style="color:#7ee787;">index.html</code> 直接對應根網址，連結不需要加子路徑</li>
+      <li style="margin-top:1rem;"><strong style="color:#fff;">其他任意名稱</strong>（Project Site）<br>
+          → 網址：<code style="color:#79c0ff;">https://你的帳號.github.io/repo名稱/</code><br>
+          → 可以有 <strong style="color:#fff;">無限多個</strong> Project Site<br>
+          → 所有頁面連結要考慮「子路徑」問題（如 CSS 路徑可能需要調整）</li>
+    </ul>
+
+    <h4 style="font-size:1.6rem; margin:2rem 0 1rem; color:var(--text,#e8e8e8);">💡 龍蝦俠網站建議用哪一種？</h4>
+    <p style="color:var(--text,#e8e8e8); margin-bottom:0.6rem;">建議使用 <code style="color:#7ee787;">帳號名稱.github.io</code>（User Site），原因：</p>
+    <ul style="line-height:2.2; padding-left:2rem; color:var(--text,#e8e8e8);">
+      <li>網址最簡潔，不帶子路徑（適合作為「個人主網站」）</li>
+      <li>所有 HTML 的 CSS / JS / 圖片相對路徑不需要任何調整，直接上傳即可</li>
+      <li>分享名片或作品集時只需說：<code style="color:#7ee787;">帳號.github.io</code>，一眼就記住</li>
+    </ul>
+
+    <div style="background:rgba(255,69,0,0.10); border:1px solid rgba(255,69,0,0.25); border-radius:8px; padding:1.2rem 1.6rem; margin-top:1.6rem; font-size:1.35rem; line-height:1.9; color:var(--text,#e8e8e8);">
+      <strong style="color:#ff7b72;">⚠️ 子路徑陷阱提醒：</strong><br>
+      若使用 Project Site（非 <code style="color:#7ee787;">帳號.github.io</code>），所有頁面的 <code style="color:#a5d6ff;">&lt;a href="about.html"&gt;</code> 仍然可以正常運作（相對路徑），但若你在 HTML 或 CSS 裡有寫「<code style="color:#ff7b72;">/css/style.css</code>」這種以「/」開頭的絕對路徑，就會指到根域名而找不到檔案。本課程的龍蝦俠網站使用相對路徑（<code style="color:#7ee787;">css/style.css</code>），因此兩種方式都可以，但仍建議用 User Site。
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2</div>
+    <h4>複製 Repository 網址</h4>
+    <p>建立後頁面上會顯示 repo 的網址，複製它（格式如下）：</p>
+    <pre><code><span class="c-out">https://github.com/lobsterman-art/lobsterman-art.github.io.git</span></code></pre>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 3</div>
+    <h4>在本機初始化 Git</h4>
+    <p>開啟終端機，<code>cd</code> 到你的網站資料夾（<code>Artist_Website</code>），執行：</p>
+    <div class="terminal">
+      <div class="terminal-bar"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><span class="terminal-title">Terminal / Git Bash</span></div>
+      <div class="terminal-body">
+<span class="c-cmt"># 1. 進入網站資料夾（Mac：替換成你的實際路徑）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">cd</span> <span class="c-str">"/Users/你的名字/Desktop/ArtWeb/Artist_Website"</span>
+
+<span class="c-cmt">#    （Windows Git Bash 路徑範例）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">cd</span> <span class="c-str">"/c/Users/darren/Desktop/ArtWeb/Artist_Website"</span>
+
+<span class="c-cmt">────────────────────────────────────────────────</span>
+
+<span class="c-cmt"># 2. 初始化 Git（在此資料夾建立 .git 隱藏資料夾）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git init</span>
+
+<span class="c-cmt">▸ 成功輸出：</span>
+<span class="c-out">Initialized empty Git repository in .../Artist_Website/.git/</span>
+
+<span class="c-cmt">────────────────────────────────────────────────</span>
+
+<span class="c-cmt"># 3. 將預設分支改名為 main（與 GitHub 一致）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git branch -M main</span>
+
+<span class="c-cmt">────────────────────────────────────────────────</span>
+
+<span class="c-cmt"># 4. 連結到 GitHub 上的 Repository</span>
+<span class="c-cmt">#    （把網址換成你自己 GitHub 上的 repo 網址）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git remote add origin</span> \
+    <span class="c-str">https://github.com/lobsterman-art/lobsterman-art.github.io.git</span>
+
+<span class="c-cmt">────────────────────────────────────────────────</span>
+
+<span class="c-cmt"># 5. 確認遠端連結是否正確</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git remote -v</span>
+
+<span class="c-cmt">▸ 成功輸出（fetch 和 push 各一行）：</span>
+<span class="c-out">origin  https://github.com/lobsterman-art/lobsterman-art.github.io.git (fetch)</span>
+<span class="c-out">origin  https://github.com/lobsterman-art/lobsterman-art.github.io.git (push)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 第七章 ══════ -->
+<div class="chapter" id="ch7">
+  <p class="chapter-num">Chapter 07</p>
+  <h2>第一次上傳：commit &amp; push</h2>
+
+  <div class="concept">
+    Git 的上傳流程分三步：<strong>Add（暫存）→ Commit（存檔）→ Push（上傳）</strong><br>
+    就像寄包裹：先把東西放進箱子（add）→ 封箱貼標籤（commit）→ 交給快遞（push）。
+  </div>
+
+  <div class="terminal">
+    <div class="terminal-bar"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><span class="terminal-title">Terminal / Git Bash（在 Artist_Website 資料夾內）</span></div>
+    <div class="terminal-body">
+<span class="c-cmt">════════════════════════════════════════════════</span>
+<span class="c-cmt">  STEP 1 ｜ 查看目前有哪些檔案需要上傳</span>
+<span class="c-cmt">════════════════════════════════════════════════</span>
+
+<span class="c-prompt">$</span> <span class="c-cmd">git status</span>
+
+<span class="c-cmt">▸ 輸出（紅色代表尚未暫存的新檔案）：</span>
+<span class="c-out">Untracked files:</span>
+<span class="c-out">  (use "git add &lt;file&gt;..." to include in what will be committed)</span>
+<span class="c-out">        index.html</span>
+<span class="c-out">        about.html</span>
+<span class="c-out">        ...</span>
+
+<span class="c-cmt">════════════════════════════════════════════════</span>
+<span class="c-cmt">  STEP 2 ｜ Add：把所有檔案放進「暫存區」</span>
+<span class="c-cmt">            （. 代表目前資料夾內的全部檔案）</span>
+<span class="c-cmt">════════════════════════════════════════════════</span>
+
+<span class="c-prompt">$</span> <span class="c-cmd">git add .</span>
+
+<span class="c-cmt"># 確認暫存結果（綠色代表已暫存）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git status</span>
+
+<span class="c-cmt">▸ 輸出：</span>
+<span class="c-out">Changes to be committed:</span>
+<span class="c-out">  new file:   index.html</span>
+<span class="c-out">  new file:   about.html</span>
+<span class="c-out">        ...</span>
+
+<span class="c-cmt">════════════════════════════════════════════════</span>
+<span class="c-cmt">  STEP 3 ｜ Commit：存檔，附上本次修改說明</span>
+<span class="c-cmt">            -m 後面的字串就是說明（要有意義！）</span>
+<span class="c-cmt">════════════════════════════════════════════════</span>
+
+<span class="c-prompt">$</span> <span class="c-cmd">git commit -m</span> <span class="c-str">"初次上傳：龍蝦俠個人網站完整版"</span>
+
+<span class="c-cmt">▸ 成功輸出：</span>
+<span class="c-out">[main (root-commit) a1b2c3d] 初次上傳：龍蝦俠個人網站完整版</span>
+<span class="c-out"> 15 files changed, 2500 insertions(+)</span>
+
+<span class="c-cmt">════════════════════════════════════════════════</span>
+<span class="c-cmt">  STEP 4 ｜ Push：推送到 GitHub</span>
+<span class="c-cmt">            -u 設定預設推送目標（第一次才需要）</span>
+<span class="c-cmt">            之後只需要 git push 即可</span>
+<span class="c-cmt">════════════════════════════════════════════════</span>
+
+<span class="c-prompt">$</span> <span class="c-cmd">git push -u origin main</span>
+
+<span class="c-cmt">▸ 成功輸出：</span>
+<span class="c-out">Enumerating objects: 20, done.</span>
+<span class="c-out">Counting objects: 100% (20/20), done.</span>
+<span class="c-out">Writing objects: 100% (20/20), done.</span>
+<span class="c-out">Branch 'main' set up to track remote branch 'main' from 'origin'.</span>
+    </div>
+  </div>
+
+  <div class="tip">遇到「Please sign in」的 GitHub 登入視窗：選擇「Sign in with browser」，在瀏覽器完成授權後即可自動繼續。</div>
+
+  <div class="success">Push 成功後，前往你的 GitHub Repository 頁面（<code>https://github.com/你的帳號/你的repo</code>），應該可以看到所有上傳的檔案！</div>
+</div>
+
+<!-- ══════ 第八章 ══════ -->
+<div class="chapter" id="ch8">
+  <p class="chapter-num">Chapter 08</p>
+  <h2>開啟 GitHub Pages</h2>
+
+  <div class="step">
+    <div class="step-num">Step 1</div>
+    <h4>進入 Repository 設定</h4>
+    <p>在你的 GitHub Repository 頁面，點擊上方的「Settings」分頁。</p>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2</div>
+    <h4>找到 Pages 設定</h4>
+    <p>在左側選單找到「Pages」，點擊進入。</p>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 3</div>
+    <h4>設定 Source（來源）</h4>
+    <ul>
+      <li><strong>Source</strong>：選擇「Deploy from a branch」</li>
+      <li><strong>Branch</strong>：選擇 <code>main</code>，資料夾選 <code>/ (root)</code></li>
+      <li>點擊「Save」</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4</div>
+    <h4>等待 1~3 分鐘，然後開啟網站！</h4>
+    <p>重新整理 Pages 設定頁面，會看到：</p>
+    <div class="success">
+      Your site is live at <strong>https://lobsterman-art.github.io</strong>
+    </div>
+    <p>點擊這個連結，你的龍蝦俠藝術家網站已經在網路上公開了！🎉</p>
+  </div>
+
+  <div class="tip">
+    如果 Repository 名稱不是 <code>帳號.github.io</code> 的格式，網站網址會是：<br>
+    <code>https://你的帳號.github.io/Repository名稱/</code>
+  </div>
+</div>
+
+<!-- ══════ 第九章 ══════ -->
+<div class="chapter" id="ch9">
+  <p class="chapter-num">Chapter 09</p>
+  <h2>日常更新工作流程</h2>
+  <p>網站上線後，每次修改都只需要三個步驟：</p>
+
+  <div class="terminal">
+    <div class="terminal-bar"><div class="terminal-dot red"></div><div class="terminal-dot yellow"></div><div class="terminal-dot green"></div><span class="terminal-title">每次更新的標準流程</span></div>
+    <div class="terminal-body">
+<span class="c-cmt"># 1. 查看本次修改了哪些檔案</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git status</span>
+
+<span class="c-cmt">────────────────────────────────────────────────</span>
+
+<span class="c-cmt"># 2. 暫存所有修改</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git add .</span>
+
+<span class="c-cmt">────────────────────────────────────────────────</span>
+
+<span class="c-cmt"># 3. 存檔，說明這次修改了什麼</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git commit -m</span> <span class="c-str">"更新：新增「光的語言」作品頁面"</span>
+
+<span class="c-cmt">────────────────────────────────────────────────</span>
+
+<span class="c-cmt"># 4. 推送到 GitHub（已設定 -u，直接 push 即可）</span>
+<span class="c-prompt">$</span> <span class="c-cmd">git push</span>
+
+<span class="c-cmt">▸ 1~3 分鐘後，GitHub Pages 自動部署，網站更新完成！</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>9-1 VSCode 的圖形介面操作（不打指令的方法）</h3>
+    <p>如果不習慣打指令，VSCode 的 Source Control 面板可以完成同樣的事：</p>
+    <table>
+      <tr><th>操作</th><th>VSCode 怎麼做</th><th>等同指令</th></tr>
+      <tr><td>查看變動檔案</td><td>點左側 Source Control 圖示（Ctrl+Shift+G）</td><td><code>git status</code></td></tr>
+      <tr><td>暫存所有檔案</td><td>點「Changes」旁的「+」按鈕</td><td><code>git add .</code></td></tr>
+      <tr><td>Commit</td><td>在「Message」欄位輸入說明，按 Ctrl+Enter</td><td><code>git commit -m "..."</code></td></tr>
+      <tr><td>Push</td><td>點上方的「…」選單 → 「Push」</td><td><code>git push</code></td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>9-2 Commit 訊息撰寫規範</h3>
+    <p>好的 commit 訊息讓自己和他人都能快速理解「這次改了什麼」：</p>
+    <table>
+      <tr><th>類型</th><th>格式</th><th>範例</th></tr>
+      <tr><td>新功能</td><td>新增：[說明]</td><td>新增：作品集 filter 功能</td></tr>
+      <tr><td>修正問題</td><td>修正：[說明]</td><td>修正：手機版導覽列顯示問題</td></tr>
+      <tr><td>更新內容</td><td>更新：[說明]</td><td>更新：替換首頁 Hero 圖片</td></tr>
+      <tr><td>調整樣式</td><td>樣式：[說明]</td><td>樣式：調整主色調為深藍色</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>9-3 常見問題 Q&amp;A</h3>
+    <table>
+      <tr><th>問題</th><th>解法</th></tr>
+      <tr><td>push 時出現「Please sign in」</td><td>選 Sign in with browser，在瀏覽器授權 GitHub 帳號</td></tr>
+      <tr><td>push 後網站沒更新</td><td>等待 1~3 分鐘，或到 GitHub → Actions 查看部署狀態</td></tr>
+      <tr><td>不小心 commit 了不該 commit 的檔案</td><td>建立 <code>.gitignore</code> 檔案，把不想追蹤的檔案/資料夾名稱寫進去</td></tr>
+      <tr><td>圖片顯示不出來</td><td>確認檔名大小寫正確（GitHub 伺服器區分大小寫）</td></tr>
+      <tr><td>p5.js CDN 在網路上無法載入</td><td>考慮把 p5.min.js 下載到本機的 <code>js/</code> 資料夾</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="text-align:center; padding: 6rem 0 2rem; color: var(--muted); font-size:1.3rem; border-top:1px solid var(--border); margin-top:4rem">
+  <p style="font-size:3rem; margin-bottom:1.6rem">🎉</p>
+  <p>恭喜！你已經學會了把網站發佈到網路上的完整流程。</p>
+  <p style="margin-top:0.8rem">現在分享你的網址給全世界：<strong>https://你的帳號.github.io</strong></p>
+  <p style="margin-top:1.6rem">🦞 龍蝦俠新媒體藝術家網站 · 網頁創意設計課程</p>
+</div>
+
+</div><!-- end .content -->
+
+<script>
+/* OS 分頁切換 */
+function switchTab(group, os) {
+  document.querySelectorAll('#' + group + '-tabs .os-tab-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  document.querySelectorAll('#' + group + '-tabs .os-panel').forEach(function(panel) {
+    panel.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  document.getElementById(group + '-' + os).classList.add('active');
+}
+</script>
+
+</body>
+</html>
